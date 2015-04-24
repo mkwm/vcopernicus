@@ -1,0 +1,29 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>vCopernicus</title>
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="/static/js/jquery.knob.min.js"></script>
+<style>
+html {
+  font: 12px sans-serif;
+}
+</style>
+</head>
+<body>
+<h1>vCopernicus</h1>
+<p>Aktywne urządzenia:</p>
+<ul>
+{% for device in devices|sort %}<li><a href="/{{ device }}/">{{ device }}</a></li>{% endfor %}
+</ul>
+<script>
+$('a').click(function (e) {
+  var url = $(this).attr("href");
+  var windowName = $(this).text();
+  var windowSize = "width=324px,height=506px,scrollbars=no,resizable=no";
+  window.open(url, windowName, windowSize);
+  e.preventDefault();
+});
+</script>
+</body>
+</html>

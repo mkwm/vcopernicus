@@ -1,0 +1,191 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<title>{{ device }} | vCopernicus</title>
+<script src="/static/js/jquery-1.11.1.min.js"></script>
+<script src="/static/js/gauge.min.js"></script>
+<script src="/static/js/jquery.knob.min.js"></script>
+<style>
+html, body {
+  padding: 0;
+  margin: 0;
+  font: 12px sans-serif;
+  text-align: center;
+}
+
+.copernicus {
+  width: 320px;
+  height: 480px;
+  outline: 1px solid #333;
+  background-size: 100%;
+  position: relative;
+  display: inline-block;
+}
+
+.button1 > input, .button2 > input {
+  border-radius: 8px;
+  width: 16px;
+  height: 16px;
+  background-color: #000;
+}
+
+.button1 {
+  position: absolute;
+  bottom: 135px;
+  right: 60px;
+}
+
+.button2 {
+  position: absolute;
+  bottom: 55px;
+  right: 105px;
+}
+
+.led1 {
+  position: absolute;
+  bottom: 215px;
+  left: 105px;
+}
+
+.led2 {
+  position: absolute;
+  bottom: 135px;
+  left: 60px;
+}
+
+.light {
+  position: absolute;
+  bottom: 55px;
+  left: 105px;
+}
+
+.led1 > div, .led2 > div, .light > div {
+  border-radius: 8px;
+  width: 16px;
+  height: 16px;
+  background-color: #000;
+}
+
+.led1 > div, .led2 > div {
+  background-color: #000;
+}
+
+.dashboard {
+  position: absolute;
+  top: 8px;
+  left: 1px;
+  overflow: auto;
+}
+
+.knob {
+  position: absolute;
+  left: 140px;
+  bottom: 123px;
+}
+</style>
+</head>
+<body>
+<div class="copernicus">
+<div class="dashboard"><canvas width="320" height="160" id="dashboard"></canvas></div>
+<div class="knob"><input type="text" value="0" data-cursor="true" data-angleOffset="-150" data-angleArc="300" data-displayInput="false" data-width="40" data-bgColor="#000000"></div>
+<div class="button1"><input type="button"></div>
+<div class="button2"><input type="button"></div>
+<div class="light"><div></div></div>
+<div class="led1"><div></div></div>
+<div class="led2"><div></div></div>
+</div>
+<div class="scenario"><strong>Scenariusz:</strong> <input type="file"></div>
+<script>
+$(function() {
+  // Create dashboard gauge
+  var opts = {
+    lines: 12,
+    angle: 0.0,
+    lineWidth: 0.01,
+    pointer: {
+      length: 1,
+      strokeWidth: 0.035,
+      color: '#000000'
+    },
+    limitMax: 'true', 
+    colorStart: 'transparent',
+    colorStop: 'transparent',
+    strokeColor: 'transparent',
+    generateGradient: true
+  };
+  var target = document.getElementById('dashboard');
+  var gauge = new Gauge(target).setOptions(opts);
+  gauge.maxValue = 100;
+  gauge.animationSpeed = 32;
+  gauge.set(0.01);
+
+  // Button 1 events
+  $('.button1 input').mousedown(function(e) {
+    $.get('/{{ device }}/publish?event=button1&data=true');
+  });
+  $('.button1 input').mouseup(function(e) {
+    $.get('/{{ device }}/publish?event=button1&data=false');
+  });
+  
+  // Button 2 events
+  $('.button2 input').mousedown(function(e) {
+    $.get('/{{ device }}/publish?event=button2&data=true');
+  });
+  $('.button2 input').mouseup(function(e) {
+    $.get('/{{ device }}/publish?event=button2&data=false');
+  });
+  
+  // Motion sensor events
+  $('.light div').mouseover(function(e) {
+    $.get('/{{ device }}/publish?event=motion&data=true');
+    $.get('/{{ device }}/publish?event=motion&data=false');
+  });
+  
+  // Knob events
+  knob_last = 0;
+  $('.knob input').knob({'height': 40, 'change': function(v) {
+    knob_now = Math.round(v)
+    if (knob_last != knob_now) {
+      knob_last = knob_now;
+      $.get('/{{ device }}/publish?event=knob&data=' + knob_now);
+    }
+  }});
+
+  // Updates source
+  var source = new EventSource('/{{ device }}/subscribe');
+  
+  // LED1 update
+  source.addEventListener('led1', function(e) {
+    led1 = JSON.parse(e.data);
+    if (led1) { $('.led1 div').css('background-color', '#F00').css('box-shadow', '0 0 16px #F00'); }
+    else { $('.led1 div').css('background-color', '#000').css('box-shadow', '0 0 0 #000'); }
+  }, false);
+  
+  // LED2 update
+  source.addEventListener('led2', function(e) {
+    led2 = JSON.parse(e.data);
+    if (led2 != '000') { $('.led2 div').css('background-color', '#' + led2).css('box-shadow', '0 0 16px #' + led2); }
+    else { $('.led2 div').css('background-color', '#000').css('box-shadow', '0 0 0 #000'); }
+  }, false);
+  
+  // Dashboard update
+  source.addEventListener('dashboard', function(e) {
+    dashboard = JSON.parse(e.data);
+    gauge.set(dashboard / 100.0 * 89);
+  }, false);
+  
+  // Remotely triggered scenario sheet update
+  source.addEventListener('scenario', function(e) {
+    $('.copernicus').css('background-image', 'url(\'' + e.data + '\')');
+  }, false);
+  
+  // Manually triggered scenario sheet update
+  $('.scenario > input').change(function(e) {
+    $('.copernicus').css('background-image', 'url(\'' + URL.createObjectURL(e.target.files[0]) + '\')');
+  });
+  
+  $.get('/{{ device }}/publish?event=setup&data=true');
+});
+</script>
+</body>
+</html>
