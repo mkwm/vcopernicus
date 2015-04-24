@@ -24,22 +24,40 @@ First of all, clone this repository:
 
 ### Coordinating webserver
 1. Enter __hypervisor__ directory
+   ```
        cd hypervisor
+   ```
+   
 2. Install required modules
+   ```
        pip install requirements.txt
+   ```
+   
 3. Run webserver
-       python hypervisor.py
+   ```
+   python hypervisor.py
+   ```
+
 4. At http://localhost:5000/ you can see all currently registered devices. Accessing http://localhost:5000/FOO will create node named __FOO__.
 
 ### Python module
 1. Enter __device__ directory
-       cd device
+   ```
+   cd device
+   ```
+   
 2. Install required modules
-       pip install requirements.txt
+   ```
+   pip install requirements.txt
+   ```
+   
 3. Write your code making sure you use mocked ```serial``` module
 4. Set ```IOT_HYPERVISOR``` and ```ION_NODENAME``` environment variables
-       export IOT_HYPERVISOR=localhost:5000
-       export IOT_NODENAME=ETH01
+   ```
+   export IOT_HYPERVISOR=localhost:5000
+   export IOT_NODENAME=ETH01
+   ```
+   
 4. Open web browser at http://localhost:5000/ETH01
 5. Run your code and have fun!
 
