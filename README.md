@@ -64,7 +64,7 @@ First of all, clone this repository:
 ## Bugs
 Yes.
 
-Because of the way mocked module works (spawning additional thread in background), you will need to forcefully close script as ```Ctrl+C``` would be (probably) ineffective. Sending SIQUIT (```Ctrl+Shift+\```)  should work.
+Because of the way mocked module works (spawning additional thread in background), you will need to forcefully close script as ```Ctrl+C``` would be (probably) ineffective. Sending SIGQUIT (```Ctrl+Shift+\```)  should work.
 
 Note that current code was created mostly as proof-of-concept. It would be rewritten from scratch, probably.
 
