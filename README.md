@@ -82,6 +82,7 @@ api = Copernicus(Serial('/dev/ttyS1', 38400))
 
 ### VirtualBox VM
 You can easily connect your virtual machine serial port to UNIX socket outside:
+
 1. Open your VM settings
 2. Choose "Serial Ports"
 3. Select "Port 1" tab (or "Port 2", if you need...)
@@ -95,6 +96,7 @@ You can easily connect your virtual machine serial port to UNIX socket outside:
 
 ### VMware Player/Workstation
 **Note**: By default, VMware adds virtual printer to newly created virtual machines. This printer occupies first serial port. Make sure to change serial port name in your code or to remove virtual printer before following these steps:
+
 1. Open your VM settings
 2. Go to "Hardware" tab
 3. Click "Add" and select "Serial Port" when wizard appears
