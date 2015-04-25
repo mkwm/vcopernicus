@@ -22,10 +22,47 @@ First of all, clone this repository:
 
     git clone https://github.com/mkwm/iot-vcopernicus.git
 
-### Coordinating webserver
+Now you can choose whether you want to use it quickly or to customize your environment.
+
+### Quick
+1. Install required modules
+   ```
+   pip install requirements.txt
+   ```
+   
+2. Run coordinating webserver
+   ```
+   python manager.py start
+   ```
+   
+3. Create your first node
+   ```
+   python manager.py create_node NODE01
+   ```
+   
+4. Start your first node
+   ```
+   python manager.py start_node NODE01
+   ```
+5. Write your code, starting from bootstrap template in ```NODE01/home/code.py```
+6. Open your web browser at http://localhost:8080/devices/NODE01
+7. Run your code and have fun!
+8. When you've finished, stop your node...
+   ```
+   python manager.py stop_node NODE01
+   ```
+   
+9. And the coordinating webserver
+   ```
+   python manager.py stop NODE01
+   ```
+
+### Customized
+
+#### Coordinating webserver
 1. Enter __hypervisor__ directory
    ```
-   cd hypervisor
+   cd lib/hypervisor
    ```
    
 2. Install required modules
@@ -35,15 +72,15 @@ First of all, clone this repository:
    
 3. Run webserver
    ```
-   python2 hypervisor.py
+   python hypervisor.py
    ```
 
 4. At http://localhost:8080/ you can see all currently registered devices. Accessing http://localhost:8080/devices/FOO will create node named __FOO__.
 
-### Serial port handler
+#### Serial port handler
 1. Enter __device__ directory
    ```
-   cd device
+   cd lib/device
    ```
    
 2. Install required modules
@@ -60,7 +97,7 @@ First of all, clone this repository:
 4. Create UNIX socket which emulates serial port (various methods to do it are described in section "Serial port emulation")
 5. Run serial port handler
    ```
-   python2 runner.py /tmp/ttyS0.sock
+   python runner.py /tmp/ttyS0.sock
    ```
    
 5. Open web browser at http://localhost:8080/devices/ETH01
@@ -140,4 +177,5 @@ vCopernicus includes jQuery, jQuery Knob and gauge.js, all of which are provided
     COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
     IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
