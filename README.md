@@ -27,7 +27,7 @@ Now you can choose whether you want to use it quickly or to customize your envir
 ### Quick
 1. Install required modules
    ```
-   pip install requirements.txt
+   pip install -r requirements.txt
    ```
    
 2. Run coordinating webserver
@@ -67,7 +67,7 @@ Now you can choose whether you want to use it quickly or to customize your envir
    
 2. Install required modules
    ```
-   pip install requirements.txt
+   pip install -r requirements.txt
    ```
    
 3. Run webserver
@@ -85,7 +85,7 @@ Now you can choose whether you want to use it quickly or to customize your envir
    
 2. Install required modules
    ```
-   pip install requirements.txt
+   pip install -r requirements.txt
    ```
    
 3. Set ```IOT_HYPERVISOR``` (if different than ```localhost:8080```) and ```IOT_NODENAME``` (if different than hostname) environment variables
