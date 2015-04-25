@@ -25,17 +25,17 @@ First of all, clone this repository:
 ### Coordinating webserver
 1. Enter __hypervisor__ directory
    ```
-       cd hypervisor
+   cd hypervisor
    ```
    
 2. Install required modules
    ```
-       pip install requirements.txt
+   pip install requirements.txt
    ```
    
 3. Run webserver
    ```
-   python hypervisor.py
+   python2 hypervisor.py
    ```
 
 4. At http://localhost:8080/ you can see all currently registered devices. Accessing http://localhost:8080/devices/FOO will create node named __FOO__.
@@ -51,7 +51,7 @@ First of all, clone this repository:
    pip install requirements.txt
    ```
    
-3. Set ```IOT_HYPERVISOR``` (if different than ```localhost:8080```) and ```ION_NODENAME``` (if different than hostname) environment variables
+3. Set ```IOT_HYPERVISOR``` (if different than ```localhost:8080```) and ```IOT_NODENAME``` (if different than hostname) environment variables
    ```
    export IOT_HYPERVISOR=localhost:1234
    export IOT_NODENAME=ETH01
@@ -82,6 +82,7 @@ api = Copernicus(Serial('/dev/ttyS1', 38400))
 
 ### VirtualBox VM
 You can easily connect your virtual machine serial port to UNIX socket outside:
+
 1. Open your VM settings
 2. Choose "Serial Ports"
 3. Select "Port 1" tab (or "Port 2", if you need...)
@@ -95,6 +96,7 @@ You can easily connect your virtual machine serial port to UNIX socket outside:
 
 ### VMware Player/Workstation
 **Note**: By default, VMware adds virtual printer to newly created virtual machines. This printer occupies first serial port. Make sure to change serial port name in your code or to remove virtual printer before following these steps:
+
 1. Open your VM settings
 2. Go to "Hardware" tab
 3. Click "Add" and select "Serial Port" when wizard appears
