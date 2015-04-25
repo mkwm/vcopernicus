@@ -9,8 +9,12 @@ from vcopernicus import DISPLAYS, SENSORS
 from vcopernicus.settings import IOT_HYPERVISOR, IOT_NODENAME, IOT_SOCKET
 from vcopernicus.utils import BitPattern
 
-
-server_address = '/tmp/ttyS0.sock'
+try:
+    server_address = sys.argv[1]
+except IndexError:
+    print >>sys.stderr, 'Usage: %s serial_socket_path' % sys.argv[0]
+    print >>sys.stderr, 'For example: %s /tmp/ttyS0.sock' % sys.argv[0]
+    sys.exit(2)
 
 try:
     IOT_SOCKET.connect(server_address)
