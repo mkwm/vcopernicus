@@ -25,17 +25,17 @@ First of all, clone this repository:
 ### Coordinating webserver
 1. Enter __hypervisor__ directory
    ```
-       cd hypervisor
+   cd hypervisor
    ```
    
 2. Install required modules
    ```
-       pip install requirements.txt
+   pip install requirements.txt
    ```
    
 3. Run webserver
    ```
-   python hypervisor.py
+   python2 hypervisor.py
    ```
 
 4. At http://localhost:8080/ you can see all currently registered devices. Accessing http://localhost:8080/devices/FOO will create node named __FOO__.
@@ -51,7 +51,7 @@ First of all, clone this repository:
    pip install requirements.txt
    ```
    
-3. Set ```IOT_HYPERVISOR``` (if different than ```localhost:8080```) and ```ION_NODENAME``` (if different than hostname) environment variables
+3. Set ```IOT_HYPERVISOR``` (if different than ```localhost:8080```) and ```IOT_NODENAME``` (if different than hostname) environment variables
    ```
    export IOT_HYPERVISOR=localhost:1234
    export IOT_NODENAME=ETH01
