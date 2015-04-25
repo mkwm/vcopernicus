@@ -5,6 +5,17 @@ import sys
 from subprocess import Popen
 from signal import SIGTERM
 
+BASE_DIR = os.path.dirname(os.path.realpath(__file__))
+BOOTSTRAP_TEMPLATE = '''#!/usr/bin/env python
+import os
+from serial import Serial
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+SERIAL_PATH = os.path.join(BASE_DIR, 'dev', 'ttyS0')
+
+serial = Serial(SERIAL_PATH, 38400)
+'''
+
 action = None
 try:
     action = sys.argv[1]
@@ -19,7 +30,7 @@ if action == 'start':
     print 'Starting coordinating webserver...'
     hypervisor_command = [
         'python',
-        'lib/hypervisor/hypervisor.py'
+        os.path.join(BASE_DIR, 'lib', 'hypervisor', 'hypervisor.py')
     ]
     hypervisor = Popen(' '.join(hypervisor_command), shell=True)
     hypervisor_pidfile = os.path.join('run', 'hypervisor.pid')
@@ -34,6 +45,7 @@ elif action == 'create_node':
     print 'Creating node %s...' % node_name
     for path in ('run', 'dev', 'home'):
         os.makedirs(os.path.join(node_name, path))
+    open(os.path.join(node_name, 'home', 'code.py'), 'w').write(BOOTSTRAP_TEMPLATE)
 elif action == 'start_node':
     node_name = sys.argv[2]
     print 'Starting node %s...' % node_name
@@ -52,7 +64,7 @@ elif action == 'start_node':
     print '  Starting virtual serial socket handler...'
     runner_command = [
         'python',
-        'lib/device/runner.py',
+        os.path.join(BASE_DIR, 'lib', 'device', 'runner.py'),
         serial_sock
     ]
     runner = Popen(' '.join(runner_command), shell=True, env=os.environ.update({'IOT_NODENAME': node_name}))
