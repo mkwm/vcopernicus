@@ -1,0 +1,2 @@
+-r lib/device/requirements.txt
+-r lib/hypervisor/requirements.txt
