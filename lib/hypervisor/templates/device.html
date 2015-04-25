@@ -169,7 +169,7 @@ $(function() {
   // LED2 update
   source.addEventListener('led2', function(e) {
     led2 = JSON.parse(e.data);
-    if (led2 != '000') { $('.led2 div').css('background-color', '#' + led2).css('box-shadow', '0 0 16px #' + led2); }
+    if (led2 != '000000') { $('.led2 div').css('background-color', '#' + led2).css('box-shadow', '0 0 16px #' + led2); }
     else { $('.led2 div').css('background-color', '#000').css('box-shadow', '0 0 0 #000'); }
   }, false);
   
