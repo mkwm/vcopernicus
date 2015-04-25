@@ -28,21 +28,30 @@ subscriptions = defaultdict(list)
 def index():
     return render_template('index.html', devices=subscriptions)
 
-@app.route('/<device>/')
+@app.route('/devices/<device>/')
 def device(device):
     return render_template('device.html', device=device)
 
-@app.route('/<device>/publish')
+@app.route('/devices/<device>/sensors')
 def publish(device):
-    data = (request.args['event'], request.args['data'])
+    data = ('setup', '')
     def notify():
         for sub in subscriptions[device][:]:
             sub.put(data)
     spawn(notify)
     return 'OK'
 
-@app.route('/<device>/subscribe')
-def subscribe(device):
+@app.route('/devices/<device>/sensors/<sensor>', methods=['POST'])
+def setup(device, sensor):
+    data = (sensor, request.get_data())
+    def notify():
+        for sub in subscriptions[device][:]:
+            sub.put(data)
+    spawn(notify)
+    return 'OK'
+
+@app.route('/devices/<device>/stream')
+def stream(device):
     def gen():
         q = Queue()
         subscriptions[device].append(q)
@@ -57,5 +66,5 @@ def subscribe(device):
 
 if __name__ == '__main__':
     app.debug = True
-    server = WSGIServer(('', 5000), app)
+    server = WSGIServer(('', 8080), app)
     server.serve_forever()

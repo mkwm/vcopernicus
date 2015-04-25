@@ -14,7 +14,7 @@ html {
 <h1>vCopernicus</h1>
 <p>Aktywne urządzenia:</p>
 <ul>
-{% for device in devices|sort %}<li><a href="/{{ device }}/">{{ device }}</a></li>{% endfor %}
+{% for device in devices|sort %}<li><a href="/devices/{{ device }}/">{{ device }}</a></li>{% endfor %}
 </ul>
 <script>
 $('a').click(function (e) {

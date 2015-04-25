@@ -1,3 +1,4 @@
+<!doctype html>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -81,13 +82,17 @@ html, body {
   position: absolute;
   left: 140px;
   bottom: 123px;
+  background: #000;
+  border-radius: 20px;
+  width: 40px;
+  height: 40px;
 }
 </style>
 </head>
 <body>
 <div class="copernicus">
 <div class="dashboard"><canvas width="320" height="160" id="dashboard"></canvas></div>
-<div class="knob"><input type="text" value="0" data-cursor="true" data-angleOffset="-150" data-angleArc="300" data-displayInput="false" data-width="40" data-bgColor="#000000"></div>
+<div class="knob"><input type="text" value="0" data-cursor="true" data-angleOffset="-150" data-angleArc="300" data-displayInput="false" data-width="40" data-bgColor="#000000" data-fgColor="#c0c0c0" data-thickness="0.75"></div>
 <div class="button1"><input type="button"></div>
 <div class="button2"><input type="button"></div>
 <div class="light"><div></div></div>
@@ -121,24 +126,24 @@ $(function() {
 
   // Button 1 events
   $('.button1 input').mousedown(function(e) {
-    $.get('/{{ device }}/publish?event=button1&data=true');
+    $.post('/devices/{{ device }}/sensors/button1', 'true');
   });
   $('.button1 input').mouseup(function(e) {
-    $.get('/{{ device }}/publish?event=button1&data=false');
+    $.post('/devices/{{ device }}/sensors/button1', 'false');
   });
   
   // Button 2 events
   $('.button2 input').mousedown(function(e) {
-    $.get('/{{ device }}/publish?event=button2&data=true');
+    $.post('/devices/{{ device }}/sensors/button2', 'true');
   });
   $('.button2 input').mouseup(function(e) {
-    $.get('/{{ device }}/publish?event=button2&data=false');
+    $.post('/devices/{{ device }}/sensors/button2', 'false');
   });
   
   // Motion sensor events
   $('.light div').mouseover(function(e) {
-    $.get('/{{ device }}/publish?event=motion&data=true');
-    $.get('/{{ device }}/publish?event=motion&data=false');
+    $.post('/devices/{{ device }}/sensors/motion', 'true');
+    $.post('/devices/{{ device }}/sensors/motion', 'false');
   });
   
   // Knob events
@@ -147,12 +152,12 @@ $(function() {
     knob_now = Math.round(v)
     if (knob_last != knob_now) {
       knob_last = knob_now;
-      $.get('/{{ device }}/publish?event=knob&data=' + knob_now);
+      $.post('/devices/{{ device }}/sensors/knob', '' + knob_now);
     }
   }});
 
   // Updates source
-  var source = new EventSource('/{{ device }}/subscribe');
+  var source = new EventSource('/devices/{{ device }}/stream');
   
   // LED1 update
   source.addEventListener('led1', function(e) {
@@ -184,7 +189,8 @@ $(function() {
     $('.copernicus').css('background-image', 'url(\'' + URL.createObjectURL(e.target.files[0]) + '\')');
   });
   
-  $.get('/{{ device }}/publish?event=setup&data=true');
+  // Trigger device state restore
+  $.get('/devices/{{ device }}/sensors');
 });
 </script>
 </body>
