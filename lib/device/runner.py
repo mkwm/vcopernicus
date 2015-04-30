@@ -1,59 +1,88 @@
 from eventsource.client import EventSourceClient
 import json
-from socket import error as socket_error
 import sys
 from threading import Thread
 from urllib2 import urlopen
 
-from vcopernicus import DISPLAYS, SENSORS
-from vcopernicus.settings import IOT_HYPERVISOR, IOT_NODENAME, IOT_SOCKET
+from vcopernicus import get_default_displays, get_default_sensors
 from vcopernicus.utils import BitPattern
 
-try:
-    server_address = sys.argv[1]
-except IndexError:
-    print >>sys.stderr, 'Usage: %s serial_socket_path' % sys.argv[0]
-    print >>sys.stderr, 'For example: %s /tmp/ttyS0.sock' % sys.argv[0]
-    sys.exit(2)
+import os
+from socket import gethostname, socket, AF_UNIX, SOCK_STREAM
 
-try:
-    IOT_SOCKET.connect(server_address)
-except socket_error as msg:
-    print >>sys.stderr, msg
-    sys.exit(1)
+IOT_HYPERVISOR = os.environ.get('IOT_HYPERVISOR', 'localhost:8080')
+IOT_NODENAME = os.environ.get('IOT_NODENAME', gethostname())
 
-def _esc_thread():
-    def handler(event):
-        if event.name == 'setup':
-            for k, v in DISPLAYS.iteritems():
-                urlopen('http://%s/devices/%s/sensors/%s' % (IOT_HYPERVISOR, IOT_NODENAME, k), data=v.internal_value)
-        elif event.name in SENSORS:
-            SENSORS[event.name].value = json.loads(event.data)
-    esc = EventSourceClient(url=IOT_HYPERVISOR, action='devices/%s' % IOT_NODENAME, target='stream', callback=handler)
-    esc.poll()
-
-thread = Thread(target=_esc_thread)
-thread.daemon = True
-thread.start()
 
 AUTOUPDATE = BitPattern('10______')
 QUERY = BitPattern('11______')
 
-def on_write(data):
-    value = ord(data)
-    if AUTOUPDATE & value:
-        for sensor in SENSORS.itervalues():
-            sensor.autoupdate = bool(sensor.query_bit & value)
-    elif QUERY & value:
-        for sensor in SENSORS.itervalues():
-            if sensor.query_bit & value:
-                IOT_SOCKET.send(chr(sensor.value))
-    else:
-        for display in DISPLAYS.itervalues():
-            if not display.query_pattern & value: continue
-            display.value = value
-            break
 
-while True:
-    data = IOT_SOCKET.recv(1)
-    on_write(data)
+class CopernicusImpl(object):
+    def __init__(self, hypervisor, nodename, path):
+        self._pattern = 'http://%s/devices/%s/sensors/%%s' % (hypervisor, nodename)
+        self.esc = EventSourceClient(url=hypervisor, action='devices/%s' % nodename, target='stream', callback=self._esc_handler)
+        self.thread = Thread(target=lambda: self.esc.poll())
+        self.thread.daemon = True
+        self.handlers = []
+        self.socket = socket(AF_UNIX, SOCK_STREAM)
+        self.socket.connect(path)
+
+    def run(self):
+        self.thread.start()
+
+    def _esc_handler(self, event):
+        data = json.loads(event.data)
+        for handler in self.handlers:
+            handler(event.name, data)
+    
+    def serial_read(self):
+        return ord(self.socket.recv(1))
+    
+    def serial_write(self, data):
+        self.socket.send(chr(data))
+    
+    def display_show(self, name, data):
+        urlopen(self._pattern % name, data=json.dumps(data))
+
+
+class VCopernicusServer(object):
+    def __init__(self, client):
+        self.client = client
+        self.client.handlers.append(self.handle_input)
+        self.displays = get_default_displays(self.client.display_show)
+        self.sensors = get_default_sensors(self.client.serial_write)
+    
+    def handle_input(self, name, value):
+        if name == 'setup':
+            for display in self.displays.itervalues():
+                display.flush()
+        elif name in self.sensors:
+            self.sensors[name].value = value
+    
+    def handle_serial(self):
+        value = self.client.serial_read()
+        if AUTOUPDATE & value:
+            for sensor in self.sensors.itervalues():
+                sensor.autoupdate = bool(sensor.query_bit & value)
+        elif QUERY & value:
+            for sensor in self.sensors.itervalues():
+                if sensor.query_bit & value:
+                    sensor.flush()
+        else:
+            for display in self.displays.itervalues():
+                if not display.query_pattern & value: continue
+                display.value = value
+    
+    def run_forever(self):
+        self.client.run()
+        while True:
+            self.handle_serial()
+
+def run():
+    client = CopernicusImpl(IOT_HYPERVISOR, IOT_NODENAME, sys.argv[1])
+    server = VCopernicusServer(client)
+    server.run_forever()
+
+if __name__ == '__main__':
+    run()

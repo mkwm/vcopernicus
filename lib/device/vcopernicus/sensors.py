@@ -1,8 +1,6 @@
-from .settings import IOT_SOCKET
-
-
 class Sensor(object):
-    def __init__(self, name, response_base, query_bit):
+    def __init__(self, name, serial_write_func, response_base, query_bit):
+        self._serial_write_func = serial_write_func
         self.name = name
         self.response_base = response_base
         self._internal_value = None
@@ -17,11 +15,14 @@ class Sensor(object):
     def internal_value(self, value):
         self._internal_value = value
         if self.autoupdate:
-            IOT_SOCKET.send(chr(self.internal_value))
+            self.flush()
     
     @property
     def value(self):
-        return self.internal_value
+        raise AttributeError('value is write-only property; use internal_value instead')
+    
+    def flush(self):
+        self._serial_write_func(self.internal_value)
 
 
 class BinarySensor(Sensor):
