@@ -12,7 +12,7 @@ html {
 </head>
 <body>
 <h1>vCopernicus</h1>
-<p>Aktywne urządzenia:</p>
+<p>Available devices</p>
 <ul>
 {% for device in devices|sort %}<li><a href="/devices/{{ device }}/">{{ device }}</a></li>{% endfor %}
 </ul>

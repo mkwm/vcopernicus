@@ -1,0 +1,97 @@
+html, body {
+  padding: 0;
+  margin: 0;
+  font: 12px sans-serif;
+  text-align: center;
+}
+
+.copernicus-blank {
+  width: 320px;
+  height: 480px;
+  background-size: 100%;
+  background-image: url('/static/img/blank.jpg');
+  position: relative;
+  display: inline-block;
+}
+
+.copernicus-scenario {
+  width: 320px;
+  height: 480px;
+  background-size: 100%;
+  position: relative;
+  display: inline-block;
+}
+
+.copernicus {
+  width: 320px;
+  height: 480px;
+  outline: 1px solid #333;
+  background-size: 100%;
+  position: relative;
+  display: inline-block;
+}
+
+.button1 > input, .button2 > input {
+  border-radius: 8px;
+  width: 16px;
+  height: 16px;
+  background-color: #000;
+}
+
+.button1 {
+  position: absolute;
+  bottom: 135px;
+  right: 60px;
+}
+
+.button2 {
+  position: absolute;
+  bottom: 55px;
+  right: 105px;
+}
+
+.led1 {
+  position: absolute;
+  bottom: 215px;
+  left: 105px;
+}
+
+.led2 {
+  position: absolute;
+  bottom: 135px;
+  left: 60px;
+}
+
+.light {
+  position: absolute;
+  bottom: 55px;
+  left: 105px;
+}
+
+.led1 > div, .led2 > div, .light > div {
+  border-radius: 8px;
+  width: 16px;
+  height: 16px;
+  background-color: transparent;
+}
+
+.led1 > div, .led2 > div {
+  background-color: transparent;
+}
+
+.dashboard {
+  position: absolute;
+  top: 10px;
+  left: 1px;
+  overflow: auto;
+}
+
+.knob {
+  position: absolute;
+  left: 140px;
+  bottom: 123px;
+  background: #000;
+  border-radius: 20px;
+  width: 40px;
+  height: 40px;
+} 
