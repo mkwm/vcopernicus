@@ -44,3 +44,17 @@ class RGBDisplay(Display):
         COLOR_STEP = 0xff / 3
         color = sum([(value & (0b11 << i*2)) / (1 << i*2) * (1 << i*8) for i in xrange(3)]) * COLOR_STEP
         self.internal_value = '{0:06x}'.format(color)
+
+
+_DEFAULT_DISPLAYS = {
+    'dashboard': (RangeDisplay, ('000_____', )),
+    'led1': (BinaryDisplay, ('001_____', )),
+    'led2': (RGBDisplay, ('01______', ))
+}
+
+
+def get_default_displays(display_show_func):
+    result = {}
+    for name, (DisplayClass, args) in _DEFAULT_DISPLAYS.iteritems():
+        result[name] = DisplayClass(name, display_show_func, *args)
+    return result

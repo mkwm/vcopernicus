@@ -35,3 +35,20 @@ class RangeSensor(Sensor):
     @Sensor.value.setter
     def value(self, value):
         self.internal_value = int(value / 100. * 63)
+
+
+_DEFAULT_SENSORS = {
+    'light': (RangeSensor, (0b00000000, 1 << 5)),
+    'button1': (BinarySensor, (0b11000010, 1 << 4)),
+    'button2': (BinarySensor, (0b11000100, 1 << 3)),
+    'knob': (RangeSensor, (0b01000000 , 1 << 2)),
+    'temperature': (RangeSensor, (0b10000000, 1 << 1)),
+    'motion': (BinarySensor, (0b11000000, 1)),
+}
+
+
+def get_default_sensors(serial_write_func):
+    result = {}
+    for name, (SensorClass, args) in _DEFAULT_SENSORS.iteritems():
+        result[name] = SensorClass(name, serial_write_func, *args)
+    return result
