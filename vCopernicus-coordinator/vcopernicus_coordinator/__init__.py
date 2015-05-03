@@ -8,6 +8,7 @@ from flask import Flask, Response, request, render_template
 from collections import defaultdict
 import time
 
+
 class ServerSentEvent(object):
     def __init__(self, event, data):
         self.data = data
@@ -64,7 +65,7 @@ def stream(device):
             subscriptions[device].remove(q)
     return Response(gen(), mimetype='text/event-stream')
 
-def run():
+def run_entry_point():
     app.debug = True
     server = WSGIServer(('', 8080), app)
     server.serve_forever()

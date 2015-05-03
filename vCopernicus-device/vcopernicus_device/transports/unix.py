@@ -1,8 +1,7 @@
+from socket import socket, AF_UNIX, SOCK_STREAM
 from vcopernicus_device.transports.fd import VCopernicusFDTransport
-from vcopernicus_device.utils import register_transport
 
 
-@register_transport('unix')
 class VCopernicusUnixSocketTransport(VCopernicusFDTransport):
     def __init__(self, args):
         sock = socket(AF_UNIX, SOCK_STREAM)

@@ -3,10 +3,7 @@ import sys
 from subprocess import Popen
 from signal import SIGTERM
 
-from vcopernicus.utils import register
 
-
-@register()
 class start(object):
     '''Start coordinating webserver'''
     @staticmethod
@@ -17,7 +14,6 @@ class start(object):
         open(hypervisor_pidfile, 'w').write(str(hypervisor.pid))
 
 
-@register()
 class stop(object):
     '''Stop coordinating webserver'''
     @staticmethod

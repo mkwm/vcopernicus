@@ -1,8 +1,7 @@
+import os
 from vcopernicus_device.transports import VCopernicusTransportBase
-from vcopernicus_device.utils import register_transport
 
 
-@register_transport('fd')
 class VCopernicusFDTransport(VCopernicusTransportBase):
     def __init__(self, args):
         super(VCopernicusFDTransport, self).__init__(args)

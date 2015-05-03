@@ -1,8 +1,7 @@
+import os
 from vcopernicus_device.transports.fd import VCopernicusFDTransport
-from vcopernicus_device.utils import register_transport
 
 
-@register_transport('pty')
 class VCopernicusPTYTransport(VCopernicusFDTransport):
     def __init__(self, args):
         args.fd, slave = os.openpty()

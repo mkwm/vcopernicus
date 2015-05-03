@@ -2,11 +2,16 @@
 import sys
 from shlex import split
 import traceback
- 
-import commands.coordinator
-import commands.device
 
-from .utils import commands
+from pkg_resources import iter_entry_points
+
+
+commands = {}
+for entry_point in iter_entry_points('vcopernicus.commands'):
+    try:
+        commands[entry_point.name] = entry_point.load()
+    except Exception:
+        print 'Failed to load', entry_point.name
 
 
 class quit(object):
@@ -18,7 +23,7 @@ class quit(object):
 commands['quit'] = quit
 
 
-def run_from_command_line():
+def run_entry_point():
     try:
         command, line = sys.argv[1], sys.argv[2:]
         commands[command].execute(line)

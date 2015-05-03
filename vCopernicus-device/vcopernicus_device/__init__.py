@@ -5,9 +5,17 @@ import sys
 
 from .sensors import get_default_sensors
 from .displays import get_default_displays
-from .utils import BitPattern, transports as TRANSPORTS
-from .transports import fd, pty, unix
+from .utils import BitPattern
 
+from pkg_resources import iter_entry_points
+
+
+TRANSPORTS = {}
+for entry_point in iter_entry_points('vcopernicus_device.transports'):
+    try:
+        TRANSPORTS[entry_point.name] = entry_point.load()
+    except Exception:
+        print 'Failed to load', entry_point.name
 
 AUTOUPDATE = BitPattern('10______')
 QUERY = BitPattern('11______')
@@ -47,7 +55,7 @@ class VCopernicusServer(object):
             self.handle_serial()
 
 
-def run():
+def run_entry_point():
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--coordinator', help='set coordinator location',
                         default=os.environ.get('IOT_HYPERVISOR', 'localhost:8080'))
@@ -58,7 +66,6 @@ def run():
         s = subparsers.add_parser(name)
         transport.parse_args(s)
     args = parser.parse_args()
-    print args
-    client = transports[args.transport](args)
+    client = TRANSPORTS[args.transport](args)
     server = VCopernicusServer(client)
     server.run_forever()
