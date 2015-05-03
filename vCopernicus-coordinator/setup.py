@@ -17,4 +17,5 @@ setup(
         'Flask',
         'gevent',
     ],
+    include_package_data=True,
 )

@@ -22,4 +22,5 @@ setup(
     install_requires=[
         'eventsource',
     ],
+    include_package_data=True,
 )

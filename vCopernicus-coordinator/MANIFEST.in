@@ -1,0 +1,4 @@
+include MANIFEST.in
+recursive-include vcopernicus_coordinator/static *
+recursive-include vcopernicus_coordinator/templates *
+recursive-exclude * *.py[co]

@@ -9,4 +9,5 @@ setup(
             'vcopernicus = vcopernicus:run_entry_point',
         ],
     },
+    include_package_data=True,
 )
