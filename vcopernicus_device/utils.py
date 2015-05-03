@@ -1,4 +1,5 @@
 import re
+from collections import OrderedDict
 
 
 class BitPattern:
@@ -14,3 +15,21 @@ class BitPattern:
 
     def __and__(self, value):
         return self._low <= value <= self._high
+
+
+
+transports = OrderedDict()
+
+
+class Registry(object):
+    def __init__(self, registry):
+        self.registry = registry
+    
+    def __call__(self, name):
+        def decorator(cls):
+            self.registry[name] = cls
+            return cls
+        return decorator
+
+
+register_transport = Registry(transports)

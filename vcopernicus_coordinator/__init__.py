@@ -64,7 +64,7 @@ def stream(device):
             subscriptions[device].remove(q)
     return Response(gen(), mimetype='text/event-stream')
 
-if __name__ == '__main__':
+def run():
     app.debug = True
     server = WSGIServer(('', 8080), app)
     server.serve_forever()
