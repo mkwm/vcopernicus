@@ -25,7 +25,7 @@ First of all, you should create new Python 2.7 virtualenv. Installing vCopernicu
 
 If you use virtualenvwrapper, creating new virtualenv is as simple as writing:
 ```
-mkvirtualenv -p /usr/bin/python2.7 iot-vcopernicus
+mkvirtualenv -p /usr/bin/python2.7 vcopernicus
 ```
 
 Before using vCopernicus tools, you will need to enter virtualenv:
