@@ -1,14 +1,22 @@
 #!/usr/bin/env python2
 import sys
 from shlex import split
+import traceback
  
 import commands.coordinator
 import commands.device
 
 from .utils import commands
 
-for k, v in commands.iteritems():
-    print '%16s - %s' % (k, v.__doc__)
+
+class quit(object):
+    @staticmethod
+    def execute(line):
+        sys.exit(0)
+
+
+commands['quit'] = quit
+
 
 def run_from_command_line():
     try:
@@ -16,6 +24,21 @@ def run_from_command_line():
         commands[command].execute(line)
     except IndexError:
         while True:
-            line = split(raw_input('>>> '))
-            command, line = line[0], line[1:]
-            commands[command].execute(line)
+            try:
+                line = split(raw_input('>>> '))
+            except EOFError:
+                print ''
+                break
+            func = None
+            try:
+                command, line = line[0], line[1:]
+                func = commands[command].execute
+            except IndexError:
+                continue
+            except KeyError:
+                print 'No such command'
+                continue
+            try:
+                func(line)
+            except Exception as e:
+                print traceback.format_exc()
