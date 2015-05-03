@@ -103,7 +103,6 @@ You can easily connect your virtual machine serial port to UNIX socket outside:
 4. Check "Enable Serial Port"
 5. Select "COM1" as "Port Number" (you can choose different number, but you'll need to adjust serial port path in your code if you do so)
 6. Choose "Host Pipe" as "Port Mode"
-vcopernicus-device fd: error: argument -f/--fd_number is required
 7. Tick checkbox next to "Create Pipe"
 8. Enter whatever path in "Port/File Path" - I suggest using something like ```/tmp/vm_ttyS0.sock```. Make sure you have write permission to this location and you remember it when running serial port handler!
 9. Click "OK"
