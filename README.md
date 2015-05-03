@@ -37,17 +37,17 @@ Entering virtualenv to run "device code" is not required - just make sure pySeri
 
 You don't have to run nodes and coordinating webserver on single machine (that means you don't have to install webserver module on node - and vice versa). Helper tool is common for both node and coordinator - it automatically detects available commands. If you want to use helper, install vCopernicus egg from this repository:
 ```
-pip install -e 'git+https://github.com/mkwm/iot-vcopernicus.git@develop#egg=vCopernicus&subdirectory=vCopernicus'
+pip install -e "git+https://github.com/mkwm/iot-vcopernicus.git@develop#egg=vCopernicus&subdirectory=vCopernicus"
 ```
 
 On the nodes, you have to install vCopernicus-device egg:
 ```
-pip install -e 'git+https://github.com/mkwm/iot-vcopernicus.git@develop#egg=vCopernicus-device&subdirectory=vCopernicus-device'
+pip install -e "git+https://github.com/mkwm/iot-vcopernicus.git@develop#egg=vCopernicus-device&subdirectory=vCopernicus-device"
 ```
 
 Similar command goes for coordinating webserver:
 ```
-pip install -e 'git+https://github.com/mkwm/iot-vcopernicus.git@develop#egg=vCopernicus-coordinator&subdirectory=vCopernicus-coordinator'
+pip install -e "git+https://github.com/mkwm/iot-vcopernicus.git@develop#egg=vCopernicus-coordinator&subdirectory=vCopernicus-coordinator"
 ```
 
 #### Coordinating webserver
