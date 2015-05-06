@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+from collections import OrderedDict
 import sys
 from shlex import split
 import traceback
@@ -6,7 +7,10 @@ import traceback
 from pkg_resources import iter_entry_points
 
 
-commands = {}
+main_loop = True
+
+
+commands = OrderedDict()
 for entry_point in iter_entry_points('vcopernicus.commands'):
     try:
         commands[entry_point.name] = entry_point.load()
@@ -15,12 +19,24 @@ for entry_point in iter_entry_points('vcopernicus.commands'):
 
 
 class quit(object):
+    '''Exit commands shell'''
     @staticmethod
     def execute(line):
-        sys.exit(0)
+        global main_loop
+        main_loop = False
 
 
-commands['quit'] = quit
+class help(object):
+    '''Show available commands list'''
+    @staticmethod
+    def execute(line):
+        global commands
+        for name, command in commands.iteritems():
+            if command.__doc__:
+                print '%16s - %s' % (name, command.__doc__)
+
+
+commands['help'] = help
 
 
 def run_entry_point():
@@ -28,10 +44,13 @@ def run_entry_point():
         command, line = sys.argv[1], sys.argv[2:]
         commands[command].execute(line)
     except IndexError:
-        while True:
+        commands['quit'] = quit
+        print "Welcome to vCopernicus management shell"
+        print "To see list of available commands, type 'help'"
+        while main_loop:
             try:
                 line = split(raw_input('>>> '))
-            except EOFError:
+            except (KeyboardInterrupt, EOFError):
                 print ''
                 break
             func = None
