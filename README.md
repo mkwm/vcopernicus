@@ -58,6 +58,7 @@ pip install -e "git+https://github.com/mkwm/iot-vcopernicus.git#egg=vCopernicus-
    vcopernicus create_node NODE
    vcopernicus start_node NODE
    ```
+   
 3. Write your code in ```NODE/home/code.py``` making use of already provided Serial object (variable ```serial```).
 4. Open web browser at [http://localhost:8080/devices/NODE](http://localhost:8080/devices/NODE)
 4. Run your code and have fun :)
