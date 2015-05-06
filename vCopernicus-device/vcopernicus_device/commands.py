@@ -1,4 +1,5 @@
 import os
+from shutil import copytree
 import sys
 from subprocess import Popen
 from signal import SIGTERM
@@ -9,10 +10,10 @@ class create_node(object):
     @staticmethod
     def execute(argv):
         node_name = argv[0]
+        BASE_DIR = os.path.dirname(os.path.realpath(__file__))
+        TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates', 'node')
         print 'Creating node %s...' % node_name
-        for path in ('run', 'dev', 'home'):
-            os.makedirs(os.path.join(node_name, path))
-        open(os.path.join(node_name, 'home', 'code.py'), 'w').write('# Placeholder')
+        copytree(TEMPLATE_DIR, node_name)
 
 
 class start_node(object):
@@ -23,7 +24,7 @@ class start_node(object):
         print 'Starting node %s...' % node_name
         serial_pty = os.path.join(node_name, 'dev', 'ttyS0')
         print '  Starting virtual serial socket handler...'
-        runner = Popen('vcopernicus-device %s' % serial_pty, shell=True, env=os.environ.update({'IOT_NODENAME': node_name}))
+        runner = Popen('vcopernicus-device pty -p %s' % serial_pty, shell=True, env=os.environ.update({'IOT_NODENAME': node_name}))
         runner_pidfile = os.path.join(node_name, 'run', 'runner.pid')
         open(runner_pidfile, 'w').write(str(runner.pid))
 
