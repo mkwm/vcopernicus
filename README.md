@@ -11,7 +11,7 @@ Management helper tool allows to conveniently perform actions such as spawning n
 
 Coordinating webserver serves as "hub" for whole cluster of virtualized Copernicus devices - it provides both GUI for user input (buttons, motion, knob rotation) or presenting device state (LEDs, servo dashboard) and API for communicating between web browser (which serves as GUI client) and serial port handler.
 
-Serial port handler translates API events to serial port data and vice versa. At the moment, it works only with serial port (physical or virtual) exposed using UNIX sockets.
+Serial port handler translates API events to serial port data and vice versa. There are several transport methods available.
 
 Both webserver and handler make extensive use of HTML5 Server-Sent Events mechanism.
 
@@ -86,7 +86,7 @@ vcopernicus-device pty -p /tmp/ttyS0
 (Then, use ```Serial('/tmp/ttyS0')``` in your code)
 
 ##### UNIX socket transport
-Method dedicated for interaction with virtual machines which expose their serial port as UNIX socket (you'll find instructions how to set this up with VirtualBox or VMware). It connects to specified socket as client, so it needs to be created by the other side first.
+Method dedicated for interaction with virtual machines which expose their serial port as UNIX socket (you'll find instructions how to set this up with VirtualBox or VMware below). It connects to specified socket as client, so it needs to be created by the other side first.
 - ```-p SOCKET_PATH```, ```--socket_path SOCKET_PATH``` - path of UNIX socket to connect to
 
 Example:
