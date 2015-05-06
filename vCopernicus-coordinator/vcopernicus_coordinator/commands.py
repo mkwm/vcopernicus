@@ -9,6 +9,10 @@ class start(object):
     @staticmethod
     def execute(argv):
         print 'Starting coordinating webserver...'
+        try:
+            os.mkdir('run')
+        except OSError:
+            pass
         hypervisor = Popen('vcopernicus-coordinator', shell=True)
         hypervisor_pidfile = os.path.join('run', 'hypervisor.pid')
         open(hypervisor_pidfile, 'w').write(str(hypervisor.pid))

@@ -6,6 +6,7 @@ from gevent.queue import Queue
 from flask import Flask, Response, request, render_template
 
 from collections import defaultdict
+import os
 import time
 
 
@@ -21,6 +22,7 @@ class ServerSentEvent(object):
             return ''
         lines = ['%s: %s' % (v, k) for k, v in self.desc_map.iteritems() if k]
         return '%s\n\n' % '\n'.join(lines)
+
 
 app = Flask(__name__)
 subscriptions = defaultdict(list)
