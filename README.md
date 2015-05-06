@@ -1,4 +1,4 @@
-# vCopernicus
+# vCopernicus by Mateusz Małek
 Simple tool that makes it possible to write code for Internet of Things without actual things available.
 
 ## How it works
@@ -37,21 +37,37 @@ Entering virtualenv to run "device code" is not required - just make sure pySeri
 
 You don't have to run nodes and coordinating webserver on single machine (that means you don't have to install webserver module on node - and vice versa). Helper tool is common for both node and coordinator - it automatically detects available commands. If you want to use helper, install vCopernicus egg from this repository:
 ```
-pip install -e "git+https://github.com/mkwm/iot-vcopernicus.git@develop#egg=vCopernicus&subdirectory=vCopernicus"
+pip install -e "git+https://github.com/mkwm/iot-vcopernicus.git#egg=vCopernicus&subdirectory=vCopernicus"
 ```
 
 On the nodes, you have to install vCopernicus-device egg:
 ```
-pip install -e "git+https://github.com/mkwm/iot-vcopernicus.git@develop#egg=vCopernicus-device&subdirectory=vCopernicus-device"
+pip install -e "git+https://github.com/mkwm/iot-vcopernicus.git#egg=vCopernicus-device&subdirectory=vCopernicus-device"
 ```
 
 Similar command goes for coordinating webserver:
 ```
-pip install -e "git+https://github.com/mkwm/iot-vcopernicus.git@develop#egg=vCopernicus-coordinator&subdirectory=vCopernicus-coordinator"
+pip install -e "git+https://github.com/mkwm/iot-vcopernicus.git#egg=vCopernicus-coordinator&subdirectory=vCopernicus-coordinator"
 ```
 
+### Quick start
+1. Install all packages listed above
+2. Run
+   ```
+   vcopernicus start
+   vcopernicus create_node NODE
+   vcopernicus start_node NODE
+   ```
+3. Write your code in ```NODE/home/code.py``` making use of already provided Serial object (variable ```serial```).
+4. Open web browser at [http://localhost:8080/devices/NODE](http://localhost:8080/devices/NODE)
+4. Run your code and have fun :)
+
+![Screenshot](http://i.imgur.com/TLCBdqc.png)
+
+### Custom setup
+
 #### Coordinating webserver
-In order to start coordinating webserver, just invoke ```vcopernicus-coordinator``` comand. You'll be able to see all currently registered devices at http://localhost:8080/. Accessing http://localhost:8080/devices/FOO will create node named __FOO__.
+In order to start coordinating webserver, just invoke ```vcopernicus-coordinator``` command. You'll be able to see all currently registered devices at [http://localhost:8080/](http://localhost:8080/). Accessing [http://localhost:8080/devices/FOO](http://localhost:8080/devices/FOO) will create node named __FOO__. Now you can interact with virtual device like you do with physical one. You can also overlay scenario sheet image (320x480 pixels).
 
 #### Serial port handler
 Serial port handler is started using command ```vcopernicus-device```. In order to use it, you need some serial port access/emulation method. In vCopernicus, such method is called transport. Each transport has its unique name and set of parameters. There are also some global parameters:
@@ -95,8 +111,6 @@ vcopernicus-device unix -p /tmp/vm_ttyS0.sock
 ```
 
 ###### VirtualBox VM
-You can easily connect your virtual machine serial port to UNIX socket outside:
-
 1. Open your VM settings
 2. Choose "Serial Ports"
 3. Select "Port 1" tab (or "Port 2", if you need...)
@@ -118,40 +132,3 @@ You can easily connect your virtual machine serial port to UNIX socket outside:
 5. Enter whatever path in blank text input - I suggest using something like ```/tmp/vm_ttyS0.sock```. Make sure you have write permission to this location and you remember it when running serial port handler! Choose "From Server" and "To An Application".
 6. Click "Finish" to close wizard and "Save" to commit changes to your VM configuration.
 7. Start your VM
-
-## Bugs
-Yes.
-
-## See also
-* [Copernicus](http://home.agh.edu.pl/~tszydlo/copernicus/) - platform for IoT classes by Tomasz Szydło and Robert Brzoza-Woch
-* [Copernicus API](https://github.com/gronostajo/copernicus-api) - convenient Python API for Copernicus by Krzysztof "gronostaj" Śmiałek
-
-## License
-vCopernicus itself is provided under the terms of [Creative Commons Attribution-NonCommercial 4.0 International](http://creativecommons.org/licenses/by-nc/4.0/) license.
-
-## External components
-vCopernicus includes jQuery, jQuery Knob and gauge.js, all of which are provided under the terms of MIT license:
-
-    The MIT License (MIT)
-   
-    jQuery: Copyright (c) jQuery Foundation and other contributors
-    jQuery Knob: Copyright (c) 2013 Anthony Terrien
-    gauge.js: Copyright (c) Bernard Kobos
-   
-    Permission is hereby granted, free of charge, to any person obtaining a copy of
-    this software and associated documentation files (the "Software"), to deal in
-    the Software without restriction, including without limitation the rights to
-    use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-    the Software, and to permit persons to whom the Software is furnished to do so,
-    subject to the following conditions:
-    
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-    
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-    FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-    COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-    IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
