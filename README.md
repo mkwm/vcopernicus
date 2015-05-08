@@ -1,4 +1,4 @@
-# vCopernicus by Mateusz Małek
+# vCopernicus
 Simple tool that makes it possible to write code for Internet of Things without actual things available.
 
 ## How it works
@@ -112,6 +112,8 @@ vcopernicus-device unix -p /tmp/vm_ttyS0.sock
 ```
 
 ###### VirtualBox VM
+You can easily connect your virtual machine serial port to UNIX socket outside:
+
 1. Open your VM settings
 2. Choose "Serial Ports"
 3. Select "Port 1" tab (or "Port 2", if you need...)
@@ -133,3 +135,40 @@ vcopernicus-device unix -p /tmp/vm_ttyS0.sock
 5. Enter whatever path in blank text input - I suggest using something like ```/tmp/vm_ttyS0.sock```. Make sure you have write permission to this location and you remember it when running serial port handler! Choose "From Server" and "To An Application".
 6. Click "Finish" to close wizard and "Save" to commit changes to your VM configuration.
 7. Start your VM
+
+## Bugs
+Yes.
+
+## See also
+* [Copernicus](http://home.agh.edu.pl/~tszydlo/copernicus/) - platform for IoT classes by Tomasz Szydło and Robert Brzoza-Woch
+* [Copernicus API](https://github.com/gronostajo/copernicus-api) - convenient Python API for Copernicus by Krzysztof "gronostaj" Śmiałek
+
+## License
+vCopernicus itself is provided under the terms of [Creative Commons Attribution-NonCommercial 4.0 International](http://creativecommons.org/licenses/by-nc/4.0/) license.
+
+## External components
+vCopernicus includes jQuery, jQuery Knob and gauge.js, all of which are provided under the terms of MIT license:
+
+    The MIT License (MIT)
+   
+    jQuery: Copyright (c) jQuery Foundation and other contributors
+    jQuery Knob: Copyright (c) 2013 Anthony Terrien
+    gauge.js: Copyright (c) Bernard Kobos
+   
+    Permission is hereby granted, free of charge, to any person obtaining a copy of
+    this software and associated documentation files (the "Software"), to deal in
+    the Software without restriction, including without limitation the rights to
+    use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+    the Software, and to permit persons to whom the Software is furnished to do so,
+    subject to the following conditions:
+    
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+    
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+    FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+    COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+    IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
