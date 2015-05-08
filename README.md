@@ -63,8 +63,6 @@ pip install -e "git+https://github.com/mkwm/iot-vcopernicus.git#egg=vCopernicus-
 4. Open web browser at [http://localhost:8080/devices/NODE](http://localhost:8080/devices/NODE)
 4. Run your code and have fun :)
 
-![Screenshot](http://i.imgur.com/TLCBdqc.png)
-
 ### Custom setup
 
 #### Coordinating webserver
