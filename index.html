@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>vCopernicus by mkwm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">vCopernicus</h1>
+      <h2 class="project-tagline">Simple tool that makes it possible to write code for Internet of Things without actual things available</h2>
+      <a href="https://github.com/mkwm/iot-vcopernicus" class="btn">View on GitHub</a>
+      <a href="https://github.com/mkwm/iot-vcopernicus/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/mkwm/iot-vcopernicus/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="how-it-works" class="anchor" href="#how-it-works" aria-hidden="true"><span class="octicon octicon-link"></span></a>How it works</h1>
+
+<p>This tool is fairly simple. It consists of three parts written in Python:</p>
+
+<ul>
+<li>management helper tool</li>
+<li>coordinating webserver</li>
+<li>serial port handler</li>
+</ul>
+
+<p>Management helper tool allows to conveniently perform actions such as spawning new node or starting coordinating webserver.</p>
+
+<p>Coordinating webserver serves as "hub" for whole cluster of virtualized Copernicus devices - it provides both GUI for user input (buttons, motion, knob rotation) or presenting device state (LEDs, servo dashboard) and API for communicating between web browser (which serves as GUI client) and serial port handler.</p>
+
+<p>Serial port handler translates API events to serial port data and vice versa. There are several transport methods available.</p>
+
+<p>Both webserver and handler make extensive use of HTML5 Server-Sent Events mechanism.</p>
+
+<h1>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h1>
+
+<p>You have to use virtualized device in the same way as with physical Copernicus in Mode 2 (via serial port). Mode 1 (direct GPIO access) is currently not supported, sorry.</p>
+
+<h1>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h1>
+
+<p>Use of Linux operating system is required (at the moment).</p>
+
+<p>First of all, you should create new Python 2.7 virtualenv. Installing vCopernicus system-wide is not recommended, as this requires superuser rights - also for updating already installed version. It also easier to completely remove virtualenv than to clean every bit of package installed system-wide.</p>
+
+<p>If you use virtualenvwrapper, creating new virtualenv is as simple as writing:</p>
+
+<pre><code>mkvirtualenv -p /usr/bin/python2.7 vcopernicus
+</code></pre>
+
+<p>Before using vCopernicus tools, you will need to enter virtualenv:</p>
+
+<pre><code>workon vcopernicus
+</code></pre>
+
+<p>Entering virtualenv to run "device code" is not required - just make sure pySerial module is available and run your script as you would do on real Copernicus device (of course, you will need to specify proper virtual serial port path).</p>
+
+<p>You don't have to run nodes and coordinating webserver on single machine (that means you don't have to install webserver module on node - and vice versa). Helper tool is common for both node and coordinator - it automatically detects available commands. If you want to use helper, install vCopernicus egg from this repository:</p>
+
+<pre><code>pip install -e "git+https://github.com/mkwm/iot-vcopernicus.git#egg=vCopernicus&amp;subdirectory=vCopernicus"
+</code></pre>
+
+<p>On the nodes, you have to install vCopernicus-device egg:</p>
+
+<pre><code>pip install -e "git+https://github.com/mkwm/iot-vcopernicus.git#egg=vCopernicus-device&amp;subdirectory=vCopernicus-device"
+</code></pre>
+
+<p>Similar command goes for coordinating webserver:</p>
+
+<pre><code>pip install -e "git+https://github.com/mkwm/iot-vcopernicus.git#egg=vCopernicus-coordinator&amp;subdirectory=vCopernicus-coordinator"
+</code></pre>
+
+<h2>
+<a id="quick-start" class="anchor" href="#quick-start" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quick start</h2>
+
+<ol>
+<li>Install all packages listed above</li>
+<li>
+<p>Run</p>
+
+<pre><code>vcopernicus start
+vcopernicus create_node NODE
+vcopernicus start_node NODE
+</code></pre>
+</li>
+<li><p>Write your code in <code>NODE/home/code.py</code> making use of already provided Serial object (variable <code>serial</code>).</p></li>
+<li>Open web browser at <a href="http://localhost:8080/devices/NODE">http://localhost:8080/devices/NODE</a>
+</li>
+<li>Run your code and have fun :)</li>
+</ol>
+
+<h2>
+<a id="custom-setup" class="anchor" href="#custom-setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Custom setup</h2>
+
+<h3>
+<a id="coordinating-webserver" class="anchor" href="#coordinating-webserver" aria-hidden="true"><span class="octicon octicon-link"></span></a>Coordinating webserver</h3>
+
+<p>In order to start coordinating webserver, just invoke <code>vcopernicus-coordinator</code> command. You'll be able to see all currently registered devices at <a href="http://localhost:8080/">http://localhost:8080/</a>. Accessing <a href="http://localhost:8080/devices/FOO">http://localhost:8080/devices/FOO</a> will create node named <strong>FOO</strong>. Now you can interact with virtual device like you do with physical one. You can also overlay scenario sheet image (320x480 pixels).</p>
+
+<h3>
+<a id="serial-port-handler" class="anchor" href="#serial-port-handler" aria-hidden="true"><span class="octicon octicon-link"></span></a>Serial port handler</h3>
+
+<p>Serial port handler is started using command <code>vcopernicus-device</code>. In order to use it, you need some serial port access/emulation method. In vCopernicus, such method is called transport. Each transport has its unique name and set of parameters. There are also some global parameters:</p>
+
+<ul>
+<li>
+<code>-c COORDINATOR</code>, <code>--coordinator COORDINATOR</code> - specifies coordinating webserver location; it defaults to <code>IOT_HYPERVISOR</code> environment variable or to <code>localhost:8080</code> if not set</li>
+<li>
+<code>-n NAME</code>, <code>--name NAME</code> - specifies node name; it defaults to <code>IOT_NODENAME</code> environment variable or to local hostname as returned by <code>gethostname()</code> call</li>
+<li>
+<code>TRANSPORT_TYPE</code> - required; specifies which transport method would be used</li>
+</ul>
+
+<p>Example: to connect as node <code>pusheen</code> to coordinator <code>drogon:5000</code> and to use <code>magic</code> transport method, you should call:</p>
+
+<pre><code>vcopernicus-device -n pusheen -c drogon:5000 magic
+</code></pre>
+
+<p>Available transports and their specific arguments are described below.</p>
+
+<h3>
+<a id="available-transports" class="anchor" href="#available-transports" aria-hidden="true"><span class="octicon octicon-link"></span></a>Available transports</h3>
+
+<h4>
+<a id="file-descriptor-fd-transport" class="anchor" href="#file-descriptor-fd-transport" aria-hidden="true"><span class="octicon octicon-link"></span></a>File descriptor (FD) transport</h4>
+
+<p>Transport which serves as base to other transports. It assumes that <code>vcopernicus-device</code> command would be provided with some already opened file descriptor, which should be used to communicate with device-side code.</p>
+
+<ul>
+<li>
+<code>-f FD_NUMBER</code>, <code>--fd-number FD_NUMBER</code> - file descriptor number</li>
+</ul>
+
+<p>Describing how one can do this is beyound the scope of this documentation. In most cases, this transport method won't be used directly. Check PTY or UNIX socket transport instead.</p>
+
+<h4>
+<a id="pseudoterminal-pty-transport" class="anchor" href="#pseudoterminal-pty-transport" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pseudoterminal (PTY) transport</h4>
+
+<p>This method provides device-side code with pseudoterminal. They accept same ioctls as real serial ports do, so device code won't be able to see any difference. This is recommended method of running vCopernicus (if you are not running device operating system separately inside VirtualBox or VMware).</p>
+
+<ul>
+<li>
+<code>-p PTY_PATH</code>, <code>--pty_path PTY_PATH</code> - path of "serial port" to create; <strong>WARNING:</strong> if file with given path exists, it would be removed!</li>
+</ul>
+
+<p>Example:</p>
+
+<pre><code>vcopernicus-device pty -p /tmp/ttyS0
+</code></pre>
+
+<p>(Then, use <code>Serial('/tmp/ttyS0')</code> in your code)</p>
+
+<h4>
+<a id="unix-socket-transport" class="anchor" href="#unix-socket-transport" aria-hidden="true"><span class="octicon octicon-link"></span></a>UNIX socket transport</h4>
+
+<p>Method dedicated for interaction with virtual machines which expose their serial port as UNIX socket (you'll find instructions how to set this up with VirtualBox or VMware below). It connects to specified socket as client, so it needs to be created by the other side first.</p>
+
+<ul>
+<li>
+<code>-p SOCKET_PATH</code>, <code>--socket_path SOCKET_PATH</code> - path of UNIX socket to connect to</li>
+</ul>
+
+<p>Example:</p>
+
+<pre><code>vcopernicus-device unix -p /tmp/vm_ttyS0.sock
+</code></pre>
+
+<h5>
+<a id="virtualbox-vm" class="anchor" href="#virtualbox-vm" aria-hidden="true"><span class="octicon octicon-link"></span></a>VirtualBox VM</h5>
+
+<p>You can easily connect your virtual machine serial port to UNIX socket outside:</p>
+
+<ol>
+<li>Open your VM settings</li>
+<li>Choose "Serial Ports"</li>
+<li>Select "Port 1" tab (or "Port 2", if you need...)</li>
+<li>Check "Enable Serial Port"</li>
+<li>Select "COM1" as "Port Number" (you can choose different number, but you'll need to adjust serial port path in your code if you do so)</li>
+<li>Choose "Host Pipe" as "Port Mode"</li>
+<li>Tick checkbox next to "Create Pipe"</li>
+<li>Enter whatever path in "Port/File Path" - I suggest using something like <code>/tmp/vm_ttyS0.sock</code>. Make sure you have write permission to this location and you remember it when running serial port handler!</li>
+<li>Click "OK"</li>
+<li>Start your VM</li>
+</ol>
+
+<h5>
+<a id="vmware-playerworkstation" class="anchor" href="#vmware-playerworkstation" aria-hidden="true"><span class="octicon octicon-link"></span></a>VMware Player/Workstation</h5>
+
+<p><strong>Note</strong>: By default, VMware adds virtual printer to newly created virtual machines. This printer occupies first serial port. Make sure to change serial port name in your code or to remove virtual printer before following these steps:</p>
+
+<ol>
+<li>Open your VM settings</li>
+<li>Go to "Hardware" tab</li>
+<li>Click "Add" and select "Serial Port" when wizard appears</li>
+<li>When asked, select "Output to socket" as serial port type</li>
+<li>Enter whatever path in blank text input - I suggest using something like <code>/tmp/vm_ttyS0.sock</code>. Make sure you have write permission to this location and you remember it when running serial port handler! Choose "From Server" and "To An Application".</li>
+<li>Click "Finish" to close wizard and "Save" to commit changes to your VM configuration.</li>
+<li>Start your VM</li>
+</ol>
+
+<h1>
+<a id="bugs" class="anchor" href="#bugs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bugs</h1>
+
+<p>Yes.</p>
+
+<h1>
+<a id="see-also" class="anchor" href="#see-also" aria-hidden="true"><span class="octicon octicon-link"></span></a>See also</h1>
+
+<ul>
+<li>
+<a href="http://home.agh.edu.pl/%7Etszydlo/copernicus/">Copernicus</a> - platform for IoT classes by Tomasz Szydło and Robert Brzoza-Woch</li>
+<li>
+<a href="https://github.com/gronostajo/copernicus-api">Copernicus API</a> - convenient Python API for Copernicus by Krzysztof "gronostaj" Śmiałek</li>
+</ul>
+
+<h1>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h1>
+
+<p>vCopernicus itself is provided under the terms of <a href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Attribution-NonCommercial 4.0 International</a> license.</p>
+
+<h1>
+<a id="external-components" class="anchor" href="#external-components" aria-hidden="true"><span class="octicon octicon-link"></span></a>External components</h1>
+
+<p>vCopernicus includes jQuery, jQuery Knob and gauge.js, all of which are provided under the terms of MIT license:</p>
+
+<pre><code>The MIT License (MIT)
+
+jQuery: Copyright (c) jQuery Foundation and other contributors
+jQuery Knob: Copyright (c) 2013 Anthony Terrien
+gauge.js: Copyright (c) Bernard Kobos
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</code></pre>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/mkwm/iot-vcopernicus">vCopernicus</a> is maintained by <a href="https://github.com/mkwm">mkwm</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
