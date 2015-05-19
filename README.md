@@ -40,7 +40,11 @@ You don't have to run nodes and coordinating webserver on single machine (that m
 pip install -e "git+https://github.com/mkwm/iot-vcopernicus.git#egg=vCopernicus&subdirectory=vCopernicus"
 ```
 
-On the nodes, you have to install vCopernicus-device egg:
+On the nodes, you have to install vCopernicus-device egg. If you're using Fedora Linux distribution, you'll need to set matching cURL SSL backend (vCopernicus is not using SSL, but you'll face ImportError if you don't do so) before installation:
+```
+export PYCURL_SSL_LIBRARY=nss
+```
+Then install vCopernicus-device egg:
 ```
 pip install -e "git+https://github.com/mkwm/iot-vcopernicus.git#egg=vCopernicus-device&subdirectory=vCopernicus-device"
 ```
