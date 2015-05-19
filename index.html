@@ -67,7 +67,12 @@
 <pre><code>pip install -e "git+https://github.com/mkwm/vcopernicus.git#egg=vCopernicus&amp;subdirectory=vCopernicus"
 </code></pre>
 
-<p>On the nodes, you have to install vCopernicus-device egg:</p>
+<p>On the nodes, you have to install vCopernicus-device egg. If you're using Fedora Linux distribution, you'll need to set matching cURL SSL backend (vCopernicus is not using SSL, but you'll face ImportError if you don't do so) before installation:</p>
+
+<pre><code>export PYCURL_SSL_LIBRARY=nss
+</code></pre>
+
+<p>Then install vCopernicus-device egg:</p>
 
 <pre><code>pip install -e "git+https://github.com/mkwm/vcopernicus.git#egg=vCopernicus-device&amp;subdirectory=vCopernicus-device"
 </code></pre>
